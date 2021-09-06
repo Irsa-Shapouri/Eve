@@ -1,4 +1,11 @@
 #در اینجا کتابخانه هارو  وارد می کنیم 
+from math import trunc
+import time
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.keys import Keys
+from selenium import webdriver
+import pyperclip
 import pyttsx3 #pip install pyttsx3
 import speech_recognition as sr #pip install speechRecognition
 import datetime
@@ -6,7 +13,8 @@ import wikipedia #pip install wikipedia
 import webbrowser
 import os
 import smtplib
-
+import random
+import subprocess
 #---------------------------------------
 #ست پروپرتی: setProperty
 # پایتسک3: pyttsx3
@@ -23,6 +31,9 @@ voices = engine.getProperty('voices')
 #گت پروپرتی مقدار فعلی یک ویژگی موتور را بدست می اورد  اما ست پروپرتی دستور را برای تنظیم ویژگی موتور قرار میدهد و متن گفته شده به استرینگ است
 engine.setProperty('voice', voices[0].id)
 
+options = Options()
+options.add_argument("user-data-dir=/tmp/tarun")
+#driver = webdriver.Chrome(executable_path = 'chromedriver.exe',chrome_options=options)
 
 def speak(audio):
     engine.say(audio)
@@ -67,115 +78,106 @@ if __name__ == "__main__":
         #===================================================
  
         #1-Set an alarm
-        if '' in query:
-            print('')
 
         #2-Sending emails
-        elif '' in query:
-            print('')
 
         #3-Sending Whatsapp massage
-        elif '' in query:
-            print('')
 
         #4-Weather
-        elif '' in query:
-            print('')
 
         #5-Math
-        elif '' in query:
-            print('')
 
         #6-Time zone conversions
-        elif '' in query:
-            print('')
-
 
         #7-Definitions, synonyms, antonyms, or etymologies of words
-        elif '' in query:
-            print('')
 
         #8-Site searches
-        elif '' in query:
-            print('')
-
+        
         #9-Open app
-        elif '' in query:
-            print('')
 
         #10-Play music from system
-        elif '' in query:
-            print('')
 
         #11-Play music from soundcloud
-        elif '' in query:
-            print('')
 
         #12-Identify songs
-        elif '' in query:
-            print('')
 
         #13-Take a picture
-        elif '' in query:
-            print('')
 
         #14-What time is it
-        elif '' in query:
-            print('')
 
         #15-Read news
-        elif '' in query:
-            print('')
 
-        #16-Shutdown
-        elif '' in query:
-            print('')
+        #16-Shutdown	
+        if "log off" in query or "sign out" in query:
+         speak('Are you sure you want to logout your Windows PC?')
+         while True:
+           query = takeCommand().lower()
+           if 'yes' in query:
+               subprocess.call(["shutdown", "/l", "/t", "5"])
+               break
+           else:
+                break
+        if "Shutdown" in query or "Shut down" in query:
+             speak('Are you sure you want to shutdown your Windows PC?')
+             while True:
+              query = takeCommand().lower()
+              if 'yes' in query:
+                subprocess.call(["shutdown", "/s", "/t", "5"]) 
+                break
+              else:
+                break
+        if "log off" in query or "sign out" in query:
+             speak('Are you sure you want to restart your windows PC ?')
+             while True:
+              query = takeCommand().lower()
+              if 'yes' in query:
+               subprocess.call(["shutdown", "/r" , "/t", "5"])
+               break
+              else:
+                
+                break
 
+         
         #17-Roll a die or roll two dice
-        elif '' in query:
-            print('')
 
+        if 'roll dice' in query  or 'roll two die' in query or 'two dice'in query:
+           dice1 =  random.choice(['One','Two','Three','Four','Five','Six'])
+           dice2 =  random.choice(['One','Two','Three','Four','Five','Six'])
+           say = random.choice([('its' + dice1 + 'and,' + dice2) , (dice1 + 'and,' + dice2) ,('its'+ dice1 + 'and,' + dice2 + 'this time') , ('ok...'+ dice1 + 'and,' + dice2)])
+           speak('Rolling...,')
+           time.sleep(1)
+           speak(say)
+
+        elif 'roll a dice' in query  or 'roll a die' in query or 'roll die' in query or 'dice' in query:
+           dice =  random.choice(['One','Two','Three','Four','Five','Six'])
+           say = random.choice(['its'+ dice,dice,'its'+ dice + 'this time','ok...'+dice])
+           speak('Rolling...,')
+           time.sleep(1)
+           speak(say)
+        
         #18-Flip a coin
-        elif '' in query:
-            print('')
 
+        elif 'flip a coin' in query or 'coin' in query or 'flip coin' in query:
+           coin =  random.choice(['Tails','Heads'])
+           say = random.choice(['its'+ coin,coin,'its'+ coin + 'this time'])
+           speak(say)
+        
         #19-What is your favorite color
-        elif '' in query:
-            print('')
 
         #20-Tell me a joke
-        elif '' in query:
-            print('')
 
         #21-Learn how to say my name
-        elif '' in query:
-            print('')
 
         #22-repeat after me
-        elif '' in query:
-            print('')
 
         #23-Reminder
-        elif '' in query:
-            print('')
 
         #24-YouTube Search
-        elif '' in query:
-            print('')
-
 
         #25-YouTube Video Downloader
-        elif '' in query:
-            print('')
 
         #26-Speed Test
-        elif '' in query:
-            print('')
 
         #27-Corona Tracker
-        elif '' in query:
-            print('')
 
         #28-Goodbye
-        elif '' in query:
-            print('')
