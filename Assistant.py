@@ -108,7 +108,7 @@ if __name__ == "__main__":
         #15-Read news
 
         #16-Shutdown	
-        if "log off" in query or "sign out" in query:
+        if "log off" in query or "sign out" in query or "signout" in query or "logoff" in query:
          speak('Are you sure you want to logout your Windows PC?')
          while True:
            query = takeCommand().lower()
@@ -117,7 +117,7 @@ if __name__ == "__main__":
                break
            else:
                 break
-        if "Shutdown" in query or "Shut down" in query:
+        if "shutdown" in query or "shut down" in query:
              speak('Are you sure you want to shutdown your Windows PC?')
              while True:
               query = takeCommand().lower()
@@ -126,8 +126,8 @@ if __name__ == "__main__":
                 break
               else:
                 break
-        if "log off" in query or "sign out" in query:
-             speak('Are you sure you want to restart your windows PC ?')
+        if "restart" in query:
+             speak('Are you sure you want to restart your windows PC?')
              while True:
               query = takeCommand().lower()
               if 'yes' in query:
