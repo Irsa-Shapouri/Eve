@@ -29,12 +29,19 @@ engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
 # print(voices[1].id)
 #گت پروپرتی مقدار فعلی یک ویژگی موتور را بدست می اورد  اما ست پروپرتی دستور را برای تنظیم ویژگی موتور قرار میدهد و متن گفته شده به استرینگ است
-engine.setProperty('voice', voices[0].id)
+engine.setProperty('voice', voices[1].id)
+engine. setProperty("rate", 170)
 
 options = Options()
 options.add_argument("user-data-dir=/tmp/tarun")
 #driver = webdriver.Chrome(executable_path = 'chromedriver.exe',chrome_options=options)
-
+def sendEmail(to, content):
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.ehlo()
+    server.starttls()
+    server.login('Email address', 'Passwords')
+    server.sendmail('Email address' ,to, content)
+    server.close()
 def speak(audio):
     engine.say(audio)
     engine.runAndWait()
@@ -80,7 +87,16 @@ if __name__ == "__main__":
         #1-Set an alarm
 
         #2-Sending emails
-
+        if 'send email' in query:
+            try:
+                speak("What should I say?")
+                content = 'takeCommand()'
+                to = "example@domain.com"
+                sendEmail(to, content)
+                speak("Email has been sent!")
+            except Exception as e:
+                print(e)
+                speak("Sorry my friend Unity buddy. I am not able to send this email") # If you email and password is incorrect.
         #3-Sending Whatsapp massage
 
         #4-Weather
@@ -108,7 +124,7 @@ if __name__ == "__main__":
         #15-Read news
 
         #16-Shutdown	
-        if "log off" in query or "sign out" in query or "signout" in query or "logoff" in query:
+        elif "log off" in query or "sign out" in query or "signout" in query or "logoff" in query:
          speak('Are you sure you want to logout your Windows PC?')
          while True:
            query = takeCommand().lower()
@@ -178,6 +194,31 @@ if __name__ == "__main__":
 
         #26-Speed Test
 
+        elif 'net speed' in query or 'speed test' in query or 'test speed' in query or ('internet' and 'speed') in query:
+            speak('Testing the speed of your internet connection')
+            try:
+                driver = webdriver.Chrome(executable_path = 'chromedriver.exe',chrome_options=options)
+                driver.get('https://www.speedtest.net')
+                try:
+                    GO_btn = driver.find_element_by_xpath('//span[@class="start-text"]')
+                    GO_btn.click()
+                    time.sleep(2)
+                except:
+                    pass
+
+                while True:
+                    PING  = driver.find_element_by_xpath('//span[@class="result-data-large number result-data-value ping-speed"]').text
+                    DOWNLOAD = driver.find_element_by_xpath('//span[@class="result-data-large number result-data-value download-speed"]').text
+                    UPLOAD = driver.find_element_by_xpath('//span[@class="result-data-large number result-data-value upload-speed"]').text
+                    if PING != ' ' and DOWNLOAD != ' ' and UPLOAD!= ' ':
+                        break
+
+                speak('your Ping speed is' + PING)
+                speak('your Download  speed is' + DOWNLOAD)
+                speak('your  Upload speed is' + UPLOAD)
+                driver.close()
+            except:
+                speak('Something went wrong Please check your internet connection and try again')
         #27-Corona Tracker
 
         #28-Goodbye
