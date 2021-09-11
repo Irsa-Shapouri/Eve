@@ -5,16 +5,16 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from selenium import webdriver
-import pyperclip
-import pyttsx3 #pip install pyttsx3
-import speech_recognition as sr #pip install speechRecognition
+import pyttsx3
+import speech_recognition as sr
 import datetime
-import wikipedia #pip install wikipedia
+import wikipedia
 import webbrowser
 import os
 import smtplib
 import random
 import subprocess
+
 #---------------------------------------
 #ست پروپرتی: setProperty
 # پایتسک3: pyttsx3
@@ -34,7 +34,7 @@ engine. setProperty("rate", 170)
 
 options = Options()
 options.add_argument("user-data-dir=/tmp/tarun")
-#driver = webdriver.Chrome(executable_path = 'chromedriver.exe',chrome_options=options)
+
 def sendEmail(to, content):
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.ehlo()
@@ -58,7 +58,8 @@ def wishMe():
     else:
         speak("Good Evening!")  
 
-    speak("I am Jarvis Sir. Please tell me how may I help you")       
+    speak("I am Jarvis Sir. Please tell me how may I help you")     
+
 
 def takeCommand():
     r = sr.Recognizer()
@@ -90,7 +91,7 @@ if __name__ == "__main__":
         if 'send email' in query:
             try:
                 speak("What should I say?")
-                content = 'takeCommand()'
+                content = takeCommand()
                 to = "example@domain.com"
                 sendEmail(to, content)
                 speak("Email has been sent!")
@@ -133,7 +134,7 @@ if __name__ == "__main__":
                break
            else:
                 break
-        if "shutdown" in query or "shut down" in query:
+        elif "shutdown" in query or "shut down" in query:
              speak('Are you sure you want to shutdown your Windows PC?')
              while True:
               query = takeCommand().lower()
@@ -142,7 +143,7 @@ if __name__ == "__main__":
                 break
               else:
                 break
-        if "restart" in query:
+        elif "restart" in query:
              speak('Are you sure you want to restart your windows PC?')
              while True:
               query = takeCommand().lower()
@@ -151,19 +152,16 @@ if __name__ == "__main__":
                break
               else:
                 
-                break
-
-         
+                break       
+      
         #17-Roll a die or roll two dice
-
-        if 'roll dice' in query  or 'roll two die' in query or 'two dice'in query:
+        elif 'roll dice' in query  or 'roll two die' in query or 'two dice'in query:
            dice1 =  random.choice(['One','Two','Three','Four','Five','Six'])
            dice2 =  random.choice(['One','Two','Three','Four','Five','Six'])
            say = random.choice([('its' + dice1 + 'and,' + dice2) , (dice1 + 'and,' + dice2) ,('its'+ dice1 + 'and,' + dice2 + 'this time') , ('ok...'+ dice1 + 'and,' + dice2)])
            speak('Rolling...,')
            time.sleep(1)
            speak(say)
-
         elif 'roll a dice' in query  or 'roll a die' in query or 'roll die' in query or 'dice' in query:
            dice =  random.choice(['One','Two','Three','Four','Five','Six'])
            say = random.choice(['its'+ dice,dice,'its'+ dice + 'this time','ok...'+dice])
@@ -172,7 +170,6 @@ if __name__ == "__main__":
            speak(say)
         
         #18-Flip a coin
-
         elif 'flip a coin' in query or 'coin' in query or 'flip coin' in query:
            coin =  random.choice(['Tails','Heads'])
            say = random.choice(['its'+ coin,coin,'its'+ coin + 'this time'])
@@ -189,11 +186,28 @@ if __name__ == "__main__":
         #23-Reminder
 
         #24-YouTube Search
+        elif ('Search'and'youtube') in query:
+
+            driver = webdriver.Chrome(executable_path = 'chromedriver.exe',chrome_options=options)
+            driver.get('https://www.youtube.com/')
+            search_box = driver.find_element_by_xpath('//button[@aria-label="Search with your voice"][@class="style-scope yt-icon-button"][@id="button"]')
+            search_box.click()
+            speak('okay what do you want to search')
+            while True:
+                msg = driver.find_element_by_xpath('//div[@id="prompt"][@class="style-scope ytd-voice-search-dialog-renderer"]').text
+                if msg == 'Listening...':
+                    continue
+                elif msg == "Didn't hear that. Try again.":
+                     mic = driver.find_element_by_xpath('//div[@class="style-scope ytd-voice-search-dialog-renderer"][@id="microphone-circle"][@role="button"]')
+                     mic.click()
+                     continue
+                else:
+                    speak('Here is the results')
+                    break
 
         #25-YouTube Video Downloader
 
         #26-Speed Test
-
         elif 'net speed' in query or 'speed test' in query or 'test speed' in query or ('internet' and 'speed') in query:
             speak('Testing the speed of your internet connection')
             try:
@@ -219,6 +233,66 @@ if __name__ == "__main__":
                 driver.close()
             except:
                 speak('Something went wrong Please check your internet connection and try again')
-        #27-Corona Tracker
 
+        #27-Corona Tracker
+        elif ('corona tracker' or 'covid tracker') in query or ('corona statistics' or 'covid statistics') in query:
+            try:
+                speak('which country')
+                country = takeCommand()
+                driver = webdriver.Chrome(executable_path = 'chromedriver.exe',chrome_options=options)
+                if country != 'global':
+
+                 driver.get('https://www.coronatracker.com/country/'+country )
+
+                 if 'Page Not Found' in driver.page_source:
+                     speak('Country Not Found Please try again')
+                     driver.close()
+                     
+
+                 else:
+                  time.sleep(3)
+
+                  speak('Confirmed')
+
+                  Confirmed = driver.find_element_by_xpath('//div[@class="px-2 text-center"]/p[@class="text-2xl font-bold text-red-600"]').text
+                  speak(Confirmed)
+
+                  new_cases = driver.find_element_by_xpath('//div[@class="px-2 text-center"]/p[@class="text-xs font-bold text-red-600"]').text
+                  speak(new_cases)
+ 
+                  speak('Recovered')
+
+                  Recovered = driver.find_element_by_xpath('//div[@class="px-2 text-center"]/p[@class="text-2xl font-bold text-green-600"]').text
+                  speak(Recovered)
+
+                  speak('Deaths')
+
+                  Deaths = driver.find_element_by_xpath('//div[@class="px-2 text-center"]/p[@class="text-2xl font-bold text-gray-600"]').text
+                  speak(Deaths)
+
+                  new_deaths = driver.find_element_by_xpath('//div[@class="px-2 text-center"]/p[@class="text-xs font-bold text-gray-600"]').text
+                  speak(new_deaths)
+                  driver.close()
+                else:
+                  driver.get('https://www.coronatracker.com/')
+
+                  speak('Confirmed')
+
+                  Confirmed = driver.find_elements_by_xpath('//span[@class="mx-2"]')[0].text
+                  speak(Confirmed)
+ 
+                  speak('Recovered')
+
+                  Recovered = driver.find_elements_by_xpath('//span[@class="mx-2"]')[2].text
+                  speak(Recovered)
+
+                  speak('Deaths')
+
+                  Deaths =  driver.find_elements_by_xpath('//span[@class="mx-2"]')[4].text
+                  speak(Deaths)
+
+                  driver.close()                    
+  
+            except:
+                speak('Something went wrong Please check your internet connection and try again')
         #28-Goodbye
