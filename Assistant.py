@@ -1,148 +1,168 @@
-#در اینجا کتابخانه هارو  وارد می کنیم 
-import time
+#####################
+# IMPORTING MODULES #
+##################### 
+
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
-from selenium import webdriver
-import pyttsx3
+from difflib import get_close_matches
 import speech_recognition as sr
+from selenium import webdriver
+from threading import Thread
+from random import choice
+from tkinter import *
 import datetime
-import wikipedia
-import webbrowser
-import os
-import smtplib
-import random
-import subprocess
 import pyjokes
+import pyttsx3
+import random
+import json
+import time
+import os
+import sys
+
+#voice txt file
+file = open("data/voice.txt", "r")
+voice_number = file.readline()
+file.close()
 
 
-#---------------------------------------
-#ست پروپرتی: setProperty
-# پایتسک3: pyttsx3
-#سپی5 : sapi5
-#گت پروپرتی : getProperty
-#------------------------------------------
-
-#engine :  در حین ساخت موتور مقدار اولیه  (پایتسک3)را فعال میکند تولید و توقف گفتار دریافت و تنظیم ویژگی های موتور گفتار و شروع و توقف حلقه های رویداد
-#13: یک برنامه (پایتتسک3) را فراخوانی میکند و کار اصلیش تبدیل که متن وارد شده را به گفتار تبدیل میکند و ماژول (پایتتسک3) دو صدا پشتیبانی میکند که اول زن است و دیگری نر است که توسط (سپی5) برای ویندوز هستش)
+#creating pyttsx3 object
 engine = pyttsx3.init('sapi5')
-# گت پروپرتی مقدار فعلی یک ویژگی موتور را بدست می اورد  اما ست پروپرتی دستور را برای تنظیم ویژگی موتور قرار میدهد و متن گفته شده به استرینگ است 
+
+#setting properties for pyttsx3 object
 voices = engine.getProperty('voices')
-# print(voices[1].id)
-#گت پروپرتی مقدار فعلی یک ویژگی موتور را بدست می اورد  اما ست پروپرتی دستور را برای تنظیم ویژگی موتور قرار میدهد و متن گفته شده به استرینگ است
-engine.setProperty('voice', voices[1].id)
+engine.setProperty('voice', voices[int(voice_number)].id)
 engine. setProperty("rate", 170)
 
+#browser settings
 options = Options()
 options.add_argument("user-data-dir=/tmp/tarun")
-file = open("user_name.txt", "r")
+
+#read username from txt file
+file = open("data/user_name.txt", "r")
 user_name = file.readline()
 file.close()
 
-def sendEmail(to, content):
-    server = smtplib.SMTP('smtp.gmail.com', 587)
-    server.ehlo()
-    server.starttls()
-    server.login('Email address', 'Passwords')
-    server.sendmail('Email address' ,to, content)
-    server.close()
 
-    
-def speak(audio):
-    engine.say(audio)
-    engine.runAndWait()
 
+####################################### CHAT BOT ####################################################
+
+data = json.load(open('data/chat.json', encoding='utf-8'))
+def reply(query):
+	if query in data:
+		response =  data[query]
+	else:
+		query = get_close_matches(query, data.keys(), n=2, cutoff=0.6)
+		if len(query)==0: return "None"
+		return choice(data[query[0]])
+
+	return choice(response)
+
+####################################### SET UP TEXT TO SPEECH #######################################
+
+def speak(text, display=True):
+
+	if display: attachTOframe(text, True)
+	engine.say(text)
+	engine.runAndWait()
+
+####################################### SET UP SPEECH TO TEXT #######################################
+
+def record(clearChat=True, iconDisplay=True):
+	print('\nListening...')
+	AITaskStatusLbl['text'] = 'Listening...'
+	r = sr.Recognizer()
+	r.dynamic_energy_threshold = False
+	r.energy_threshold = 4000
+	with sr.Microphone() as source:
+		r.adjust_for_ambient_noise(source)
+		audio = r.listen(source)
+		said = ""
+		try:
+			AITaskStatusLbl['text'] = ' Waiting...'
+			said = r.recognize_google(audio)
+			print(f"\nUser said: {said}")
+			if clearChat:
+				clearChatScreen()
+			if iconDisplay: Label(chat_frame,  bg='#121010').pack(anchor='e',pady=0)
+			attachTOframe(said)
+		except Exception as e:
+			print(e)
+			if "connection failed" in str(e):
+				speak("Your System is Offline...",)
+			return 'None'
+	return said.lower()
+def voiceMedium():
+    wishMe()
+    while True:
+        q = record()
+        if q == 'None': continue
+        else: main(q.lower())
+
+####################################### WISH USER ACCORDING TO TIME #################################
 
 def wishMe():
     hour = int(datetime.datetime.now().hour)
     if hour>=0 and hour<12:
-        speak("Good Morning," + user_name)
+        speak("Good Morning " + user_name)
 
     elif hour>=12 and hour<18:
-        speak("Good Afternoon," + user_name)   
+        speak("Good Afternoon " + user_name)   
 
     else:
-        speak("Good Evening," + user_name)  
+        speak("Good Evening " + user_name)  
 
     speak("tell me how may I help you")     
 
+####################################### ATTACHING BOT/USER CHAT ON CHAT SCREEN ######################
 
-def takeCommand():
-    r = sr.Recognizer()
-    with sr.Microphone() as source:
-        print("Listening...")
-        r.pause_threshold = 1
-        audio = r.listen(source)
+def attachTOframe(text,bot=False):
+	if bot:
+		botchat = Label(chat_frame,text=text, bg="#810000", fg="white", justify=LEFT, wraplength=250, font=('Montserrat',12, 'bold'))
+		botchat.pack(anchor='w',ipadx=5,ipady=5,pady=5)
+	else:
+		userchat = Label(chat_frame, text=text, bg="#CE1212", fg='white', justify=RIGHT, wraplength=250, font=('Montserrat',12, 'bold'))
+		userchat.pack(anchor='e',ipadx=2,ipady=2,pady=5)
 
-    try:
-        print("Recognizing...")    
-        query = r.recognize_google(audio, language='en-in')
-        print(f"User said: {query}\n")
+####################################### CLEAR CHAT SCREEN ###########################################
 
-    except Exception as e:
-        print("Say that again please...")  
-        return "None"
-    return query
+def clearChatScreen():
+	for wid in chat_frame.winfo_children():
+		wid.destroy()
 
+####################################### SWITCHING BETWEEN FRAMES ####################################
 
-if __name__ == "__main__":
-    wishMe()
-    while True:
-        query = takeCommand().lower()
-        #===================================================
- 
-        #1-Set an alarm
+def raise_frame(frame):
+	frame.tkraise()
+	clearChatScreen()
 
-        #2-Sending emails
-        if 'send email' in query:
-            try:
-                speak("What should I say?")
-                content = takeCommand()
-                to = "example@domain.com"
-                sendEmail(to, content)
-                speak("Email has been sent!")
-            except Exception as e:
-                print(e)
-                speak("Sorry my friend Unity buddy. I am not able to send this email") # If you email and password is incorrect.
-        #3-Sending Whatsapp massage
+####################################### TASK/COMMAND HANDLER ########################################
 
-        #4-Weather
+def main(text):
 
-        #5-Math
-
-        #6-Time zone conversions
-
-        #7-Definitions, synonyms, antonyms, or etymologies of words
-           
-        #8-Site searches
-
-        #9-Open app
-
-        #10-Play music from system
-
-        #11-Play music from soundcloud
-
-
-        #12-Identify songs
-
-        #13-Take a picture
-
-        #14-What time is it
-
-        #15-Read news
-        elif 'read news' in query or 'Read news' in query:
+        file = open("data/voice.txt", "r")
+        voice_number = file.readline()
+        engine.setProperty('voice', voices[int(voice_number)].id)
+       
+        #Read news
+        if 'read news' in text:                
          try:
             Counter = 0
-            speak('Okay, choose one, 1-Top stories , 2-World , 3-Your local news , 4-Business , 5-Technology , 6-Entertainment , 7-Sports , 8-Science , 9-Health , 0-Search for topics locations and sources ')
+            engine. setProperty("rate", 180)
+            speak('Okay, choose one' + '\n' + '1-Top stories' + '\n' + '2-World' + '\n' + '3-Your local news' + '\n' + '4-Business' + '\n' + '5-Technology' + '\n' + '6-Entertainment' + '\n' + '7-Sports' + '\n' + '8-Science' + '\n' + '9-Health' + '\n' + '0-Search for topics locations and sources ')
+            engine. setProperty("rate", 170)
             #get user choice
-            User_choice = takeCommand().lower() 
+            User_choice = record(False)
             #to launch chrome browser
             driver = webdriver.Chrome(executable_path = 'chromedriver.exe') 
             
             if User_choice == '1' or 'Top stories' in User_choice or 'top stories' in User_choice:
                 #get top stories news url
                 driver.get('https://news.google.com/')
+                clearChatScreen()
                 #Read 10 first news headline
                 for i in range(10):
+                    if Counter == 5:
+                        clearChatScreen()
                     #find news headline text
                     news = driver.find_elements_by_xpath('//article[@class=" MQsxIb xTewfe R7GTQ keNKEd j7vNaf Cc0Z5d EjqUne"]/h3/a')[Counter].text
                     speak(news)
@@ -153,8 +173,11 @@ if __name__ == "__main__":
             elif User_choice == '2' or 'World' in User_choice or 'world' in User_choice:
                 #get world news url (https://news.google.com/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx1YlY4U0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US:en)
                 driver.get('https://b2n.ir/q41179')
+                clearChatScreen()
                 #Read 10 first news headline
                 for i in range(10):
+                    if Counter == 5:
+                        clearChatScreen()                    
                     #find news headline text
                     news = driver.find_elements_by_xpath('//article[@class=" MQsxIb xTewfe R7GTQ keNKEd j7vNaf Cc0Z5d EjqUne"]/h3/a')[Counter].text
                     speak(news)
@@ -166,8 +189,11 @@ if __name__ == "__main__":
             elif User_choice == '3' or 'Local' in User_choice or 'local' in User_choice:
                 #get local news url (https://news.google.com/topics/CAAqHAgKIhZDQklTQ2pvSWJHOWpZV3hmZGpJb0FBUAE/sections/CAQiTkNCSVNORG9JYkc5allXeGZkakpDRUd4dlkyRnNYM1l5WDNObFkzUnBiMjV5Q2hJSUwyMHZNR1owYkhoNkNnb0lMMjB2TUdaMGJIZ29BQSowCAAqLAgKIiZDQklTRmpvSWJHOWpZV3hmZGpKNkNnb0lMMjB2TUdaMGJIZ29BQVABUAE?hl=en-US&gl=US&ceid=US:en)
                 driver.get('https://b2n.ir/h39264')
+                clearChatScreen()
                 #Read 10 first news headline
                 for i in range(10):
+                    if Counter == 5:
+                        clearChatScreen()                    
                     #find news headline text
                     news = driver.find_elements_by_xpath('//article[@class=" MQsxIb xTewfe R7GTQ keNKEd j7vNaf Cc0Z5d EjqUne"]/h3/a')[Counter].text
                     speak(news)
@@ -179,8 +205,11 @@ if __name__ == "__main__":
             elif User_choice == '4' or 'Business' in User_choice or 'business' in User_choice:
                 #get business news url (https://news.google.com/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx6TVdZU0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US:en)
                 driver.get('https://b2n.ir/m52571')
+                clearChatScreen()
                 #Read 10 first business news
                 for i in range(10):
+                    if Counter == 5:
+                        clearChatScreen()                    
                     #find news headline text
                     news = driver.find_elements_by_xpath('//article[@class=" MQsxIb xTewfe R7GTQ keNKEd j7vNaf Cc0Z5d EjqUne"]/h3/a')[Counter].text
                     speak(news)
@@ -192,8 +221,11 @@ if __name__ == "__main__":
             elif User_choice == '5' or 'Technology' in User_choice or 'technology' in User_choice:
                  #get technology news url (https://news.google.com/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGRqTVhZU0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US:en)
                 driver.get('https://b2n.ir/x71855')
+                clearChatScreen()
                 #Read 10 first technology news
                 for i in range(10):
+                    if Counter == 5:
+                        clearChatScreen()                    
                     #find news headline text
                     news = driver.find_elements_by_xpath('//article[@class=" MQsxIb xTewfe R7GTQ keNKEd j7vNaf Cc0Z5d EjqUne"]/h3/a')[Counter].text
                     speak(news)
@@ -205,8 +237,11 @@ if __name__ == "__main__":
             elif User_choice == '6' or 'Entertainment' in User_choice or 'entertainment' in User_choice:
                 #get entertainment news url (https://news.google.com/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNREpxYW5RU0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US:en)
                 driver.get('https://b2n.ir/x88215')
+                clearChatScreen()
                 #Read 10 first entertainment news
                 for i in range(10):
+                    if Counter == 5:
+                        clearChatScreen()                    
                     #find news headline text
                     news = driver.find_elements_by_xpath('//article[@class=" MQsxIb xTewfe R7GTQ keNKEd j7vNaf Cc0Z5d EjqUne"]/h3/a')[Counter].text
                     speak(news)
@@ -218,8 +253,11 @@ if __name__ == "__main__":
             elif User_choice == '7' or 'Sports' in User_choice or 'sports' in User_choice:
                 #get sports news url (https://news.google.com/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRFp1ZEdvU0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US:en)
                 driver.get('https://b2n.ir/m81691')
+                clearChatScreen()
                 #Read 10 first sports news
                 for i in range(10):
+                    if Counter == 5:
+                        clearChatScreen()                    
                     #find news headline text
                     news = driver.find_elements_by_xpath('//article[@class=" MQsxIb xTewfe R7GTQ keNKEd j7vNaf Cc0Z5d EjqUne"]/h3/a')[Counter].text
                     speak(news)
@@ -231,8 +269,11 @@ if __name__ == "__main__":
             elif User_choice == '8' or 'Science' in User_choice or 'science' in User_choice:
                 #get science news url (https://news.google.com/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRFp0Y1RjU0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US:en)
                 driver.get('https://b2n.ir/h50778')
+                clearChatScreen()
                 #Read 10 first science news
                 for i in range(10):
+                    if Counter == 5:
+                        clearChatScreen()                    
                     #find news headline text
                     news = driver.find_elements_by_xpath('//article[@class=" MQsxIb xTewfe R7GTQ keNKEd j7vNaf Cc0Z5d EjqUne"]/h3/a')[Counter].text
                     speak(news)
@@ -244,8 +285,11 @@ if __name__ == "__main__":
             elif User_choice == '9' or 'Health' in User_choice or 'health' in User_choice:
                 #get health news url (https://news.google.com/topics/CAAqIQgKIhtDQkFTRGdvSUwyMHZNR3QwTlRFU0FtVnVLQUFQAQ?hl=en-US&gl=US&ceid=US:en)
                 driver.get('https://b2n.ir/w06918')
+                clearChatScreen()
                 #Read 10 first health news
                 for i in range(10):
+                    if Counter == 5:
+                        clearChatScreen()                    
                     #find news headline text
                     news = driver.find_elements_by_xpath('//article[@class=" MQsxIb xTewfe R7GTQ keNKEd j7vNaf Cc0Z5d EjqUne"]/h3/a')[Counter].text
                     speak(news)
@@ -255,10 +299,11 @@ if __name__ == "__main__":
                 driver.close()
 
             elif User_choice == '0' or 'Search' in User_choice or 'search' in User_choice:
-                speak('What do you want to search')
-                User_search = takeCommand().lower()
+                speak('What do you want to search?')
+                User_search = record(False)
                 #get url
                 driver.get('https://news.google.com')
+                clearChatScreen()
                 #find search box
                 Search_box = driver.find_element_by_xpath('//input[@aria-label="Search"][@type="text"][@class="Ax4B8 ZAGvjd"]')      
                 #put User_search to search box
@@ -269,6 +314,8 @@ if __name__ == "__main__":
                 driver.get(driver.current_url)
                 #Read 10 first news
                 for i in range(10):
+                    if Counter == 5:
+                        clearChatScreen()                    
                     #find news headline text
                     news = driver.find_elements_by_xpath('//article[@class=" MQsxIb xTewfe R7GTQ keNKEd j7vNaf Cc0Z5d EjqUne"]/h3/a')[Counter].text
                     speak(news)
@@ -284,69 +331,67 @@ if __name__ == "__main__":
          except:
              #For handle errors
              speak('Something went wrong Please check your internet connection and try again')
-       
-        #16-Shutdown	
-        elif "log off" in query or "sign out" in query or "signout" in query or "logoff" in query:
+      
+        #Shutdown
+        elif "log off" in text or "sign out" in text or "signout" in text or "logoff" in text:
          speak('Are you sure you want to logout your Windows Computer?')
          #Get confirmed
-         Confirmed = takeCommand().lower()
+         Confirmed = record(False)
          if 'yes' in Confirmed or 'Yes' in Confirmed:
             speak('okay')
             #Sign out Windows
             os.system("shutdown -l")
-
-        elif "shutdown" in query or "shut down" in query:
+        elif "shutdown" in text or "shut down" in text:
             speak('Are you sure you want to shutdown your Windows Computer?')
             #Get confirmed
-            Confirmed = takeCommand().lower()
+            Confirmed = record(False)
             if 'yes' in Confirmed or 'Yes' in Confirmed:
                 speak('okay')
                 #Shutdown Windows
                 os.system("shutdown -s")
-     
-        elif "restart" in query:
+        elif "restart" in text:
             speak('Are you sure you want to restart your windows Computer?')
             #Get confirmed
-            Confirmed = takeCommand().lower()
+            Confirmed = record(False)
             if 'yes' in Confirmed or 'Yes' in Confirmed:
                 speak('okay')
                 #Restart Windows
                 os.system("shutdown -r")    
-      
-        #17-Roll a die or roll two dice
-        elif 'roll dice' in query  or 'roll two die' in query or 'two dice'in query:
+            
+        #Roll a die or roll two dice
+        elif 'roll two die' in text or 'two dice'in text:
            #Random number
            dice1 =  random.choice(['One','Two','Three','Four','Five','Six'])
            dice2 =  random.choice(['One','Two','Three','Four','Five','Six'])
            #Random answer
-           say = random.choice([('its' + dice1 + 'and,' + dice2) , (dice1 + 'and,' + dice2) ,('its'+ dice1 + 'and,' + dice2 + 'this time') , ('ok...'+ dice1 + 'and,' + dice2)])
-           speak('Rolling...,')
+           say = random.choice([('its ' + dice1 + ' and ' + dice2) , (dice1 + ' and ' + dice2) ,('its '+ dice1 + ' and ' + dice2 + ' this time') , ('ok... '+ dice1 + ' and ' + dice2)])
+           speak('Rolling...')
            time.sleep(1)
            speak(say)
-        elif 'roll a dice' in query  or 'roll a die' in query or 'roll die' in query or 'dice' in query:
+        elif 'dice' in text:
            #Random number
            dice =  random.choice(['One','Two','Three','Four','Five','Six'])
            #Random answer
-           say = random.choice(['its'+ dice,dice,'its'+ dice + 'this time','ok...'+dice])
-           speak('Rolling...,')
+           say = random.choice(['its '+ dice,dice,'its '+ dice + ' this time','ok... '+dice])
+           speak('Rolling...')
            time.sleep(1)
            speak(say)
-        
-        #18-Flip a coin
-        elif 'flip a coin' in query or 'coin' in query or 'flip coin' in query:
+   
+        #Flip a coin
+        elif 'coin' in text:
            #Random choice
            coin =  random.choice(['Tails','Heads'])
            #Random answer
-           say = random.choice(['its'+ coin,coin,'its'+ coin + 'this time'])
+           say = random.choice(['its '+ coin,coin,'its '+ coin + ' this time'])
            speak(say)
-        
-        #19-What is your favorite color
-        elif 'what is your favorite color' in query or 'what is your favourite colour' in query or "what's your favourite colour" in query or "what's your favourite color" in query:
+
+        #What is your favorite color
+        elif 'your favorite color' in text or 'your favourite colour' in text:
             #Random color
             color = random.choice(['Red','Yellow' ,'Blue' , 'Orange' , 'Green' , 'Pink' , 'Purple' , 'Black' , 'White'])
             speak("software doesn't usually get to choose one, but i'll say," + color + ",""what's your's")
             #Get user color
-            user_color = takeCommand()
+            user_color = record(False)
             if user_color == 'red' :
                 speak('Red is the traditional color of warning and danger, and is therefore often used on flags.')
             elif user_color == 'orange':
@@ -368,20 +413,21 @@ if __name__ == "__main__":
             else:
                 speak("Nice Choice")
 
-        #20-Tell me a joke
-        elif 'tell me a joke' in query or 'say a joke' in query:
+        #Tell me a joke
+        elif 'tell me a joke' in text or 'say a joke' in text:
         
             speak((pyjokes.get_joke()))
        
-        #21-Learn how to say my name
-        elif 'Learn how to say my name' in query or 'learn how to say my name' in query:
-            speak("Okay, what's your name")
+        #Learn how to say my name
+        elif 'learn my name' in text:
+            speak("Okay, what's your name?")
             #Get user name
-            user_name = takeCommand()
-            speak('Do You Want  Call You,' + user_name)
+            user_name = record(False)
+            speak('Do You Want  Call You, ' + user_name + '?')
             #Get user confirmed
-            Confirmed = takeCommand()
-            if Confirmed == 'yes' or Confirmed == 'Yes':
+            Confirmed = record(False)
+            if Confirmed == 'yes':
+             speak('Okay from now on, I call you ' + user_name)
              file = open('user_name.txt', 'r+')
              #Remove last user name from file
              file.truncate(0)
@@ -389,114 +435,70 @@ if __name__ == "__main__":
              file.write(user_name)
              file.close()
 
-        #22-repeat after me
-        elif 'repeat after me' in query:
+        #repeat after me
+        elif 'repeat after me' in text:
             speak('okay')
-            Speak_user = takeCommand().lower()
+            Speak_user = record(False)
             speak(Speak_user)
 
-        #23-Reminder
+        #Soundcloud
+        elif 'soundcloud' in text:
+         driver = webdriver.Chrome(executable_path = 'chromedriver.exe',chrome_options=options)
 
-        #24-YouTube Search
-        elif ('search' in query and 'youtube' in query) or ('Search' in query and 'Youtube' in query) or  ('Search' in query and 'YouTube' in query) or  ('search' in query and 'YouTube' in query) or  ('search' in query and 'Youtube' in query):
+         speak('What do you want to search?')
+
+         search_soundcloud = record(False)
+        
+         driver.get('https://soundcloud.com/search/sounds?q=' + search_soundcloud)
+         
+         play_btn = driver.find_elements_by_xpath('//li[@class="searchList__item"]/div[@class="searchItem"]/div[@class="sound searchItem__trackItem track streamContext"]/div/div[@class="sound__content"]/div[@class="sound__header sc-mb-1.5x sc-px-2x"]/div/div/div/a')
+         play_btn[0].click()
+
+        
+         while True: 
+            soundcloud = record(False)   
+          
+            if 'next' in soundcloud:
+                next_btn = driver.find_element_by_xpath('//div[@class="playControls__elements"]/button[@class="skipControl sc-ir playControls__control playControls__next skipControl__next"]')
+                next_btn.click()
+           
+            elif 'stop' in soundcloud or 'play' in soundcloud:
+                play_btn = driver.find_elements_by_xpath('//div[@class="playControls__elements"]/button[@class="playControl sc-ir playControls__control playControls__play"]')
+                play_btn.click()
+
+            elif 'previous' in soundcloud:
+                previous_btn = driver.find_elements_by_xpath('//div[@class="playControls__elements"]/button[@class="skipControl sc-ir playControls__control playControls__prev skipControl__previous"]')
+                previous_btn.click()  
+
+            elif 'exit' in soundcloud:
+                break
+            else:
+                continue
+
+        #YouTube Search
+        elif ('search' in text and 'YouTube' in text):
           try:
-            driver = webdriver.Chrome(executable_path = 'chromedriver.exe',chrome_options=options)
-            #Get youtube url
-            driver.get('https://www.youtube.com/')
-            #Click on microphone button
-            voice_search = driver.find_element_by_xpath('//button[@aria-label="Search with your voice"][@class="style-scope yt-icon-button"][@id="button"]')
-            voice_search.click()
-            speak('okay what do you want to search')
-            while True:
-                #Search with voice
-                text = driver.find_element_by_xpath('//div[@id="prompt"][@class="style-scope ytd-voice-search-dialog-renderer"]').text
-                if text == 'Listening...':
-                    continue
-                elif text == "Didn't hear that. Try again.":
-                     microphone = driver.find_element_by_xpath('//div[@class="style-scope ytd-voice-search-dialog-renderer"][@id="microphone-circle"][@role="button"]')
-                     microphone.click()
-                     continue
-                else:
-                    speak('Here is the results ,if you want to download a video just click on that and say download this video')
-                    break
+                driver = webdriver.Chrome(executable_path = 'chromedriver.exe',chrome_options=options)
+                #Get youtube url
+                driver.get('https://www.youtube.com/')
+                #put text on search box
+                search_form = driver.find_element_by_xpath('//form[@class="style-scope ytd-searchbox"][@id="search-form"]/div/div/input')
+                speak('Okay what do you want to search?')
+                User_search = record(False)
+                search_form.send_keys(User_search)
+                search_button = driver.find_element_by_xpath('//form[@class="style-scope ytd-searchbox"][@id="search-form"]/button')
+                search_button.click()
+                speak('Here is the results')
+
           except:
                 #For handle errors
                 speak('Something went wrong Please check your internet connection and try again')
-     
-        #25-YouTube Video Downloader
-        elif 'download this video' in query:
-            try:
-             #Get video url
-             url = (driver.current_url)
-             #Go to youtube downloader website
-             driver.get('https://yt1s.com')
-             #Put video url
-             search = driver.find_element_by_xpath('//input[@id="s_input"][@type="search"]')
-             search.send_keys(url)
-             button = driver.find_element_by_xpath('//button[@type="button"][@id="btn-convert"]')
-             button.click()
-             while True:
-                 if 'Get link' in driver.page_source:
-                     break
-             #3 type of video quality
-             Quality1 = driver.find_element_by_xpath('//select[@class="form-control form-control-small"][@id="formatSelect"]/optgroup[@label="mp4"]/option[2]').text
-             Quality2 = driver.find_element_by_xpath('//select[@class="form-control form-control-small"][@id="formatSelect"]/optgroup[@label="mp4"]/option[3]').text
-             Quality3 = driver.find_element_by_xpath('//select[@class="form-control form-control-small"][@id="formatSelect"]/optgroup[@label="mp4"]/option[4]').text
 
-             speak('choose one : ' + '1:' + Quality1 + '2:' + Quality2 + '3:' + Quality3)
-          
-             User_choice = takeCommand()
-            
-             if User_choice == '1':
-                 #select quality
-                 select = driver.find_element_by_xpath('//select[@class="form-control form-control-small"][@id="formatSelect"]/optgroup[@label="mp4"]/option[2]').click()
-                 button = driver.find_element_by_xpath('//button[@class="btn-blue-small form-control"][@id="btn-action"]')
-                 button.click()
-                 while True:
-                  try:
-                   #Find and click on download button
-                   download = driver.find_element_by_xpath('//a[@id="asuccess"][@class="form-control mesg-convert success"]')
-                   download.click()
-                   break
-                  except:
-                   pass
-             if User_choice == '2':
-                 #select quality
-                 select = driver.find_element_by_xpath('//select[@class="form-control form-control-small"][@id="formatSelect"]/optgroup[@label="mp4"]/option[2]').click()
-                 button = driver.find_element_by_xpath('//button[@class="btn-blue-small form-control"][@id="btn-action"]')
-                 button.click()
- 
-                 while True:
-                  try:
-                   #Find and click on download button   
-                   download = driver.find_element_by_xpath('//a[@id="asuccess"][@class="form-control mesg-convert success"]')
-                   download.click()
-                   break
-                  except:
-                   pass
-             if User_choice == '3':
-                 #select quality
-                 select = driver.find_element_by_xpath('//select[@class="form-control form-control-small"][@id="formatSelect"]/optgroup[@label="mp4"]/option[2]').click()
-                 button = driver.find_element_by_xpath('//button[@class="btn-blue-small form-control"][@id="btn-action"]')
-                 button.click()
-                 
-                 while True:
-                  try:
-                   #Find and click on download button
-                   download = driver.find_element_by_xpath('//a[@id="asuccess"][@class="form-control mesg-convert success"]')
-                   download.click()
-                   break
-                  except:
-                   pass                                    
-            except:
-                #For handle errors
-                speak('Something went wrong Please check your internet connection and try again')
-        
-        #26-Speed Test
-        elif 'net speed' in query or 'speed test' in query or 'test speed' in query or ('internet' and 'speed') in query:
-            speak('Testing the speed of your internet connection')
+        #Speed Test
+        elif 'net speed' in text or 'speed test' in text or 'test speed' in text or ('internet' in text and 'speed' in text):
+            speak('Testing the speed of your internet connection.')
             try:
-                driver = webdriver.Chrome(executable_path = 'chromedriver.exe',chrome_options=options)
+                driver = webdriver.Chrome(executable_path = 'chromedriver.exe')
                 driver.get('https://www.speedtest.net')
                 try:
                     GO_btn = driver.find_element_by_xpath('//span[@class="start-text"]')
@@ -512,32 +514,32 @@ if __name__ == "__main__":
                     if PING != ' ' and DOWNLOAD != ' ' and UPLOAD!= ' ':
                         break
 
-                speak('your Ping speed is' + PING)
-                speak('your Download  speed is' + DOWNLOAD)
-                speak('your  Upload speed is' + UPLOAD)
+                speak('your Ping speed is ' + PING)
+                speak('your Download  speed is ' + DOWNLOAD)
+                speak('your  Upload speed is ' + UPLOAD)
                 driver.close()
             except:
                 #For handle errors
                 speak('Something went wrong Please check your internet connection and try again')
 
-        #27-Corona Tracker
-        elif ('corona tracker' or 'covid tracker') in query or ('corona statistics' or 'covid statistics') in query:
+        #Corona Tracker#
+        elif 'corona tracker' in text or 'covid tracker' in text or 'corona statistics' in text or 'covid statistics' in text:
             try:
-                speak('which country')
+                speak('which country?')
                 #Get country
-                country = takeCommand()
-                driver = webdriver.Chrome(executable_path = 'chromedriver.exe',chrome_options=options)
+                country = record(False)
+                driver = webdriver.Chrome(executable_path = 'chromedriver.exe')
                 if country != 'global':
                  driver.get('https://www.coronatracker.com/country/'+country )
 
                  if 'Page Not Found' in driver.page_source:
-                     speak('Country Not Found Please try again')
+                     speak('Country Not Found. Please try again.')
                      driver.close()
                      
                  else:
                   time.sleep(3)
 
-                  speak('Confirmed')
+                  speak('Confirmed:')
 
                   Confirmed = driver.find_element_by_xpath('//div[@class="px-2 text-center"]/p[@class="text-2xl font-bold text-red-600"]').text
                   speak(Confirmed)
@@ -545,12 +547,12 @@ if __name__ == "__main__":
                   new_cases = driver.find_element_by_xpath('//div[@class="px-2 text-center"]/p[@class="text-xs font-bold text-red-600"]').text
                   speak(new_cases)
  
-                  speak('Recovered')
+                  speak('Recovered:')
 
                   Recovered = driver.find_element_by_xpath('//div[@class="px-2 text-center"]/p[@class="text-2xl font-bold text-green-600"]').text
                   speak(Recovered)
 
-                  speak('Deaths')
+                  speak('Deaths:')
 
                   Deaths = driver.find_element_by_xpath('//div[@class="px-2 text-center"]/p[@class="text-2xl font-bold text-gray-600"]').text
                   speak(Deaths)
@@ -562,17 +564,17 @@ if __name__ == "__main__":
                   #If user choose global
                   driver.get('https://www.coronatracker.com/')
 
-                  speak('Confirmed')
+                  speak('Confirmed:')
 
                   Confirmed = driver.find_elements_by_xpath('//span[@class="mx-2"]')[0].text
                   speak(Confirmed)
  
-                  speak('Recovered')
+                  speak('Recovered:')
 
                   Recovered = driver.find_elements_by_xpath('//span[@class="mx-2"]')[2].text
                   speak(Recovered)
 
-                  speak('Deaths')
+                  speak('Deaths:')
 
                   Deaths =  driver.find_elements_by_xpath('//span[@class="mx-2"]')[4].text
                   speak(Deaths)
@@ -582,5 +584,71 @@ if __name__ == "__main__":
             except:
                 #For handle errors
                 speak('Something went wrong Please check your internet connection and try again')
-      
-        #28-Goodbye
+       
+        #change voice
+        elif 'change' in text and 'voice' in text:
+            
+            speak('Okay')
+            if voice_number == '0':
+                file = open('voice.txt', 'r+')
+                #Remove last number from file
+                file.truncate(0)
+                #Write number in file
+                file.write('1')
+            else:
+                file = open('voice.txt', 'r+')
+                #Remove last number from file
+                file.truncate(0)
+                #Write number in file
+                file.write('0')                    
+          
+        #Exit  
+        elif 'exit' in text or 'goodbye' in text or 'quit' in text or 'bye' in text:          
+         
+          speak('Goodbye')
+          root.destroy()
+
+        else:
+         result = reply(text)
+         if result != "None": speak(result)
+         else:
+            speak("Here's what I found on the web... ")
+            driver = webdriver.Chrome(executable_path = 'chromedriver.exe',chrome_options=options)
+            driver.get('https://www.google.com/')
+            search = driver.find_element_by_name('q')
+            search.send_keys(text)
+            search.send_keys(Keys.RETURN)
+
+
+############################################## GUI #############################################
+
+root = Tk()
+root.title('CS50x')
+
+root.geometry('400x640+1060+100')
+root.resizable(False, False) 
+
+root.iconphoto(False, PhotoImage(file='images/icon.png'))
+root.pack_propagate(0)
+root1 = Frame(root, bg='#121010')
+
+for f in (root1,):
+    f.grid(row=0, column=0, sticky='news')	
+chat_frame = Frame(root1, width=380,height=551,bg='#121010')
+chat_frame.pack(padx=10)
+chat_frame.pack_propagate(0)
+bottomFrame = Frame(root1,height=100)
+bottomFrame.pack(fill=X, side=BOTTOM)
+VoiceModeFrame = Frame(bottomFrame)
+VoiceModeFrame.pack(fill=BOTH)
+
+box = PhotoImage(file='images/box.png')
+cbl = Label(VoiceModeFrame, fg='white', image=box,)
+cbl.pack(pady=17)
+AITaskStatusLbl = Label(VoiceModeFrame, text=' Waiting...', fg='white', bg='#940A0A', font=('montserrat', 16))
+AITaskStatusLbl.place(x=140,y=32)
+
+Thread(target=voiceMedium).start()
+
+raise_frame(root1)
+root.mainloop()

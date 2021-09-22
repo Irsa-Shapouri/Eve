@@ -1,0 +1,47 @@
+{
+
+		"hi": [
+		"Hello",
+		"Hello, how are you?",
+		"Good to see you!",
+		"Pleased to meet you.",
+        "Nice to meet you."
+	],
+
+	"hello": [
+		"Hello",
+		"Hello, how are you?",
+		"Good to see you!",
+		"Pleased to meet you.",
+        "Nice to meet you."
+	],
+
+	"how are you": [
+		"Hey, I'm Good !",
+		"I'm good",
+		"I'm good, what about you?",
+		"I'm fine, hope you're also fine",
+		"Good, how about you?",
+		"Doing fine, and you?",
+		"I'm doing great",
+		"I'm doing Well",
+		"Pretty good",
+		"Very well, thanks"
+	],
+
+	"your name": [
+        "I'm CS 50 Assistant"
+	],
+	"thank": [
+		"My Pleasure",
+		"You're welcome",
+		"Welcome"
+	],
+
+	"fine": [
+		"Hope you're fine",
+		"Good to know that you are fine",
+		"I'm glad"
+	]
+
+}
