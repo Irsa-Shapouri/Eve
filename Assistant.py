@@ -17,7 +17,7 @@ import random
 import json
 import time
 import os
-import sys
+
 
 #voice txt file
 file = open("data/voice.txt", "r")
@@ -34,8 +34,16 @@ engine.setProperty('voice', voices[int(voice_number)].id)
 engine. setProperty("rate", 170)
 
 #browser settings
-options = Options()
-options.add_argument("user-data-dir=/tmp/tarun")
+Soundcloud_options = Options()
+Soundcloud_options.add_argument("user-data-dir=C:\\Users\\irsa\\Desktop\\python projects\\jarvis\\Chrome_data\\Soundcloud")
+
+#browser settings
+YouTube_options = Options()
+YouTube_options.add_argument("user-data-dir=C:\\Users\\irsa\\Desktop\\python projects\\jarvis\\Chrome_data\\YouTube")
+
+#browser settings
+Google_options = Options()
+Google_options.add_argument("user-data-dir=C:\\Users\\irsa\\Desktop\\python projects\\jarvis\\Chrome_data\\Google")
 
 #read username from txt file
 file = open("data/user_name.txt", "r")
@@ -147,9 +155,8 @@ def main(text):
         if 'read news' in text:                
          try:
             Counter = 0
-            engine. setProperty("rate", 180)
-            speak('Okay, choose one' + '\n' + '1-Top stories' + '\n' + '2-World' + '\n' + '3-Your local news' + '\n' + '4-Business' + '\n' + '5-Technology' + '\n' + '6-Entertainment' + '\n' + '7-Sports' + '\n' + '8-Science' + '\n' + '9-Health' + '\n' + '0-Search for topics locations and sources ')
-            engine. setProperty("rate", 170)
+            speak('Which news you want to hear?')
+            attachTOframe('1-Top stories' + '\n' + '2-World' + '\n' + '3-Your local news' + '\n' + '4-Business' + '\n' + '5-Technology' + '\n' + '6-Entertainment' + '\n' + '7-Sports' + '\n' + '8-Science' + '\n' + '9-Health' + '\n' + '0-Search for topics locations and sources ',True)
             #get user choice
             User_choice = record(False)
             #to launch chrome browser
@@ -443,42 +450,51 @@ def main(text):
 
         #Soundcloud
         elif 'soundcloud' in text:
-         driver = webdriver.Chrome(executable_path = 'chromedriver.exe',chrome_options=options)
+         try:
+            driver = webdriver.Chrome(executable_path = 'chromedriver.exe',chrome_options=Soundcloud_options)
 
-         speak('What do you want to search?')
+            speak('What do you want to search?')
 
-         search_soundcloud = record(False)
-        
-         driver.get('https://soundcloud.com/search/sounds?q=' + search_soundcloud)
-         
-         play_btn = driver.find_elements_by_xpath('//li[@class="searchList__item"]/div[@class="searchItem"]/div[@class="sound searchItem__trackItem track streamContext"]/div/div[@class="sound__content"]/div[@class="sound__header sc-mb-1.5x sc-px-2x"]/div/div/div/a')
-         play_btn[0].click()
+            search_soundcloud = record(False)
+            
+            driver.get('https://soundcloud.com/search/sounds?q=' + search_soundcloud)
+            
+            play_btn = driver.find_elements_by_xpath('//li[@class="searchList__item"]/div[@class="searchItem"]/div[@class="sound searchItem__trackItem track streamContext"]/div/div[@class="sound__content"]/div[@class="sound__header sc-mb-1.5x sc-px-2x"]/div/div/div/a')
+            play_btn[0].click()
 
-        
-         while True: 
-            soundcloud = record(False)   
-          
-            if 'next' in soundcloud:
-                next_btn = driver.find_element_by_xpath('//div[@class="playControls__elements"]/button[@class="skipControl sc-ir playControls__control playControls__next skipControl__next"]')
-                next_btn.click()
-           
-            elif 'stop' in soundcloud or 'play' in soundcloud:
-                play_btn = driver.find_elements_by_xpath('//div[@class="playControls__elements"]/button[@class="playControl sc-ir playControls__control playControls__play"]')
-                play_btn.click()
+            
+            while True: 
+                soundcloud = record(False)   
+            
+                if 'next' in soundcloud:
+                    next_btn = driver.find_element_by_xpath('//div[@class="playControls__elements"]/button[@class="skipControl sc-ir playControls__control playControls__next skipControl__next"]')
+                    next_btn.click()
+            
+                elif 'stop' in soundcloud or 'play' in soundcloud:
+                    play_btn = driver.find_elements_by_xpath('//div[@class="playControls__elements"]/button[@class="playControl sc-ir playControls__control playControls__play"]')
+                    play_btn.click()
 
-            elif 'previous' in soundcloud:
-                previous_btn = driver.find_elements_by_xpath('//div[@class="playControls__elements"]/button[@class="skipControl sc-ir playControls__control playControls__prev skipControl__previous"]')
-                previous_btn.click()  
+                elif 'previous' in soundcloud:
+                    previous_btn = driver.find_elements_by_xpath('//div[@class="playControls__elements"]/button[@class="skipControl sc-ir playControls__control playControls__prev skipControl__previous"]')
+                    previous_btn.click()  
 
-            elif 'exit' in soundcloud:
-                break
-            else:
-                continue
+                elif 'exit' in soundcloud:
+                    break
+              
+                else:
+                   break
+         except:
+              try:
+                  driver.close()
+              except:
+                  pass
+              #For handle errors
+              speak('Something went wrong Please check your internet connection and try again')
 
         #YouTube Search
-        elif ('search' in text and 'YouTube' in text):
+        elif ('search' in text and 'youtube' in text):
           try:
-                driver = webdriver.Chrome(executable_path = 'chromedriver.exe',chrome_options=options)
+                driver = webdriver.Chrome(executable_path = 'chromedriver.exe',chrome_options=YouTube_options)
                 #Get youtube url
                 driver.get('https://www.youtube.com/')
                 #put text on search box
@@ -486,7 +502,7 @@ def main(text):
                 speak('Okay what do you want to search?')
                 User_search = record(False)
                 search_form.send_keys(User_search)
-                search_button = driver.find_element_by_xpath('//form[@class="style-scope ytd-searchbox"][@id="search-form"]/button')
+                search_button = driver.find_element_by_xpath('//button[@class="style-scope ytd-searchbox"][@id="search-icon-legacy"]')
                 search_button.click()
                 speak('Here is the results')
 
@@ -587,7 +603,7 @@ def main(text):
        
         #change voice
         elif 'change' in text and 'voice' in text:
-            
+           
             speak('Okay')
             if voice_number == '0':
                 file = open('voice.txt', 'r+')
@@ -604,7 +620,6 @@ def main(text):
           
         #Exit  
         elif 'exit' in text or 'goodbye' in text or 'quit' in text or 'bye' in text:          
-         
           speak('Goodbye')
           root.destroy()
 
@@ -612,12 +627,17 @@ def main(text):
          result = reply(text)
          if result != "None": speak(result)
          else:
-            speak("Here's what I found on the web... ")
-            driver = webdriver.Chrome(executable_path = 'chromedriver.exe',chrome_options=options)
-            driver.get('https://www.google.com/')
-            search = driver.find_element_by_name('q')
-            search.send_keys(text)
-            search.send_keys(Keys.RETURN)
+            try:    
+                speak("Here's what I found on the web... ")
+                driver = webdriver.Chrome(executable_path = 'chromedriver.exe',chrome_options=Google_options)
+                driver.get('https://www.google.com/')
+                search = driver.find_element_by_name('q')
+                search.send_keys(text)
+                search.send_keys(Keys.RETURN)
+            except:
+                #For handle errors
+                speak('Something went wrong Please check your internet connection and try again.')
+       
 
 
 ############################################## GUI #############################################

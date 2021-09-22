@@ -1,0 +1,4 @@
+[9532:9536:0922/205323.867:ERROR:device_event_log_impl.cc(214)] [20:53:23.867] Bluetooth: bluetooth_adapter_winrt.cc:1073 Getting Default Adapter failed.
+[9532:9536:0922/205323.953:ERROR:device_event_log_impl.cc(214)] [20:53:23.954] USB: usb_device_handle_win.cc:1048 Failed to read descriptor from node connection: A device attached to the system is not functioning. (0x1F)
+[9532:9536:0922/205352.774:INFO:CONSOLE(33)] "You like to look under the hood? Why not help us build the engine? https://soundcloud.com/jobs", source: https://a-v2.sndcdn.com/assets/48-370302ec.js (33)
+[9532:9536:0922/205403.612:WARNING:pref_notifier_impl.cc(40)] Pref observer for media_router.cast_allow_all_ips found at shutdown.
