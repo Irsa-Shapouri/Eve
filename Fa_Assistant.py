@@ -28,7 +28,6 @@ import os
 cwd = os.getcwd()
 dir1 = str(cwd) + "\\Chrome_data\\Soundcloud"
 dir2 = str(cwd) + "\\Chrome_data\\YouTube"
-dir3 = str(cwd) + "\\Chrome_data\\Google"
 
 
 #browser settings
@@ -39,9 +38,6 @@ Soundcloud_options.add_argument(f"user-data-dir={dir1}")
 YouTube_options = Options()
 YouTube_options.add_argument(f"user-data-dir={dir2}")
 
-#browser settings
-Google_options = Options()
-Google_options.add_argument(f"user-data-dir={dir3}")
 
 
 
@@ -234,7 +230,7 @@ def main(text):
               playsound('sound\\wrong.mp3')
 
         #YouTube Search
-        elif  'یوتیوب' in text:
+        elif  'یوتیوب' in text or 'youtube' in text:
           try:
                 driver = webdriver.Chrome(executable_path = 'chromedriver.exe',chrome_options=YouTube_options)
                 #Get youtube url
@@ -489,12 +485,12 @@ def main(text):
             r = requests.get(url)
             data = BeautifulSoup(r.text, "html.parser")
             temperature = data.find("div", class_ = "BNeawe").text
-            attachTOframe(f"{temperature} C",True)   
+            attachTOframe(f"{temperature} ",True)   
         
         #date
         elif 'امروز' in text or 'تاریخ' in text:
             t_date = datetime.datetime.now()
-            attachTOframe(t_date.strftime('%D %B, of %Y'),True)
+            attachTOframe(t_date.strftime('%D'),True)
 
         #open cmd
         elif 'cmd' in text:
@@ -567,39 +563,55 @@ def main(text):
             playsound('sound\\alarm.mp3')
             alarm_time = record(False)
             attachTOframe(alarm_time)
-            driver = webdriver.Chrome(executable_path = 'chromedriver.exe')
-            driver.get('https://kukuklok.com/')
-            sound = driver.find_element_by_xpath('//div[@class="clock_button"][@id="choose_sound_right"]')
-            sound.click()
-            sound.click()     
-            hour_bt = driver.find_element_by_xpath('//div[@id="button_plus_hour"][@class="clock_button"]')
-            min_bt = driver.find_element_by_xpath('//div[@id="button_plus_min"][@class="clock_button"]') 
             if len(alarm_time) == 3:
+                driver = webdriver.Chrome(executable_path = 'chromedriver.exe')
+                driver.get('https://kukuklok.com/')
+                sound = driver.find_element_by_xpath('//div[@class="clock_button"][@id="choose_sound_right"]')
+                sound.click()
+                sound.click()     
+                hour_bt = driver.find_element_by_xpath('//div[@id="button_plus_hour"][@class="clock_button"]')
+                min_bt = driver.find_element_by_xpath('//div[@id="button_plus_min"][@class="clock_button"]') 
                 h = alarm_time[0]
                 m = alarm_time[1:]
                 for i in range(int(h)):
                  hour_bt.click()
                 for i in range(int(m)):
                  min_bt.click()     
-
-            if len(alarm_time) == 4:
+                set_Alarm = driver.find_element_by_xpath('//div[@id="set_alarm_button"][@class="button"]')
+                set_Alarm.click()
+                driver.minimize_window()
+                speak('Done')
+         
+            elif len(alarm_time) == 4:
+                driver = webdriver.Chrome(executable_path = 'chromedriver.exe')
+                driver.get('https://kukuklok.com/')
+                sound = driver.find_element_by_xpath('//div[@class="clock_button"][@id="choose_sound_right"]')
+                sound.click()
+                sound.click()     
+                hour_bt = driver.find_element_by_xpath('//div[@id="button_plus_hour"][@class="clock_button"]')
+                min_bt = driver.find_element_by_xpath('//div[@id="button_plus_min"][@class="clock_button"]') 
                 h = alarm_time[:2]
                 m = alarm_time[2:]
                 for i in range(int(h)):
                  hour_bt.click()
                 for i in range(int(m)):
                  min_bt.click() 
-
-            set_Alarm = driver.find_element_by_xpath('//div[@id="set_alarm_button"][@class="button"]')
-            set_Alarm.click()
+                set_Alarm = driver.find_element_by_xpath('//div[@id="set_alarm_button"][@class="button"]')
+                set_Alarm.click()
+                driver.minimize_window()
+                speak('Done')
+      
+            else:
+                attachTOframe('لطفا فقط ساعت را بگویید',True)
+                playsound('sound\\saytime.mp3')
 
         #play music
-        elif 'اهنگ'in text or 'لیست پخش ' in text:
+        elif 'آهنگ'in text or 'لیست پخش ' in text:
             music_dir = 'playlist'
             songs = os.listdir(music_dir)
             if songs == []:
                 os.startfile('playlist')
-                attachTOframe("I didn't find any song, please move your playlist here." ,True)
+                attachTOframe("من هیچ آهنگی پیدا نکردم لطفا لیست پخش خود را به اینجا انتقال دهید" ,True)
                 playsound('sound\\song_notfound.mp3')
             else:
                 counter = 0
