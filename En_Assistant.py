@@ -898,8 +898,6 @@ def main(text):
       
             else:
                 speak('please just say time')
-
-
          except:
                  
               #For handle errors

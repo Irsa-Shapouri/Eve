@@ -1,3 +1,2 @@
-2021/10/02-13:09:04.050 1230 Reusing MANIFEST C:\Users\irsa\Desktop\python projects\jarvis\Chrome_data\Soundcloud\Default\Local Storage\leveldb/MANIFEST-000001
-2021/10/02-13:09:04.052 1230 Recovering log #3
-2021/10/02-13:09:04.053 1230 Reusing old log C:\Users\irsa\Desktop\python projects\jarvis\Chrome_data\Soundcloud\Default\Local Storage\leveldb/000003.log 
+2021/10/02-19:53:27.935 17e0 Creating DB C:\Users\irsa\Desktop\python projects\jarvis\Chrome_data\Soundcloud\Default\Local Storage\leveldb since it was missing.
+2021/10/02-19:53:30.132 17e0 Reusing MANIFEST C:\Users\irsa\Desktop\python projects\jarvis\Chrome_data\Soundcloud\Default\Local Storage\leveldb/MANIFEST-000001

@@ -1,3 +1,2 @@
-2021/10/02-13:09:03.084 24fc Reusing MANIFEST C:\Users\irsa\Desktop\python projects\jarvis\Chrome_data\Soundcloud\Default\Service Worker\Database/MANIFEST-000001
-2021/10/02-13:09:03.479 24fc Recovering log #3
-2021/10/02-13:09:03.479 24fc Reusing old log C:\Users\irsa\Desktop\python projects\jarvis\Chrome_data\Soundcloud\Default\Service Worker\Database/000003.log 
+2021/10/02-19:53:44.423 225c Creating DB C:\Users\irsa\Desktop\python projects\jarvis\Chrome_data\Soundcloud\Default\Service Worker\Database since it was missing.
+2021/10/02-19:53:44.944 225c Reusing MANIFEST C:\Users\irsa\Desktop\python projects\jarvis\Chrome_data\Soundcloud\Default\Service Worker\Database/MANIFEST-000001
