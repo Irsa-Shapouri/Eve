@@ -1,0 +1,12 @@
+[8408:10044:1002/131341.747:INFO:CONSOLE(4279)] "LegacyDataMixin will be applied to all legacy elements.
+Set `_legacyUndefinedCheck: true` on element class to enable.", source: https://www.youtube.com/s/desktop/18284868/jsbin/desktop_polymer.vflset/desktop_polymer.js (4279)
+[8408:10044:1002/131341.908:INFO:CONSOLE(0)] "Refused to display 'https://accounts.google.com/' in a frame because it set 'X-Frame-Options' to 'deny'.", source: chrome-error://chromewebdata/ (0)
+[8408:10044:1002/131341.932:INFO:CONSOLE(7288)] "crbug/1173575, non-JS module files deprecated.", source: chrome-error://chromewebdata/ (7288)
+[8408:9436:1002/131415.572:ERROR:chrome_browser_main_extra_parts_metrics.cc(228)] crbug.com/1216328: Checking Bluetooth availability started. Please report if there is no report that this ends.
+[8408:9436:1002/131415.579:ERROR:chrome_browser_main_extra_parts_metrics.cc(231)] crbug.com/1216328: Checking Bluetooth availability ended.
+[8408:9436:1002/131415.590:ERROR:chrome_browser_main_extra_parts_metrics.cc(234)] crbug.com/1216328: Checking default browser status started. Please report if there is no report that this ends.
+[8408:10044:1002/131415.604:ERROR:device_event_log_impl.cc(214)] [13:14:15.604] Bluetooth: bluetooth_adapter_winrt.cc:1073 Getting Default Adapter failed.
+[8408:10044:1002/131415.612:INFO:CONSOLE(0)] "The resource https://i.ytimg.com/generate_204 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.", source: https://www.youtube.com/ (0)
+[8408:9436:1002/131415.618:ERROR:chrome_browser_main_extra_parts_metrics.cc(238)] crbug.com/1216328: Checking default browser status ended.
+[8408:10044:1002/131415.677:ERROR:device_event_log_impl.cc(214)] [13:14:15.676] USB: usb_device_handle_win.cc:1048 Failed to read descriptor from node connection: A device attached to the system is not functioning. (0x1F)
+[8408:10044:1002/131518.241:WARNING:pref_notifier_impl.cc(40)] Pref observer for media_router.cast_allow_all_ips found at shutdown.

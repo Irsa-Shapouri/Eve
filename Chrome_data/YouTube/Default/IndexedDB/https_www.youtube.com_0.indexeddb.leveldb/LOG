@@ -1,0 +1,30 @@
+2021/10/02-13:13:42.220 2760 Creating DB C:\Users\irsa\Desktop\python projects\jarvis\Chrome_data\YouTube\Default\IndexedDB\https_www.youtube.com_0.indexeddb.leveldb since it was missing.
+2021/10/02-13:13:42.382 2760 Reusing MANIFEST C:\Users\irsa\Desktop\python projects\jarvis\Chrome_data\YouTube\Default\IndexedDB\https_www.youtube.com_0.indexeddb.leveldb/MANIFEST-000001
+2021/10/02-13:13:45.498 203c Manual compaction at level-0 from '\x00\x04\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x05\x00\x00\x00' @ 0 : 0; will stop at (end)
+2021/10/02-13:13:45.713 21f4 Level-0 table #5: started
+2021/10/02-13:13:45.751 21f4 Level-0 table #5: 41593 bytes OK
+2021/10/02-13:13:45.824 21f4 Delete type=0 #3
+2021/10/02-13:13:45.824 21f4 Manual compaction at level-0 from '\x00\x02\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x03\x00\x00\x00' @ 0 : 0; will stop at (end)
+2021/10/02-13:13:45.957 21f4 Level-0 table #7: started
+2021/10/02-13:13:46.020 21f4 Level-0 table #7: 739 bytes OK
+2021/10/02-13:13:46.101 21f4 Delete type=0 #4
+2021/10/02-13:13:46.102 21f4 Manual compaction at level-0 from '\x00\x06\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x07\x00\x00\x00' @ 0 : 0; will stop at (end)
+2021/10/02-13:13:46.102 21f4 Manual compaction at level-1 from '\x00\x06\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x07\x00\x00\x00' @ 0 : 0; will stop at '\x00\x06\x00\x00\xc8\x05\x00p\x00r\x00e\x00f\x00s' @ 642 : 0
+2021/10/02-13:13:46.102 21f4 Compacting 1@1 + 1@2 files
+2021/10/02-13:13:46.201 21f4 Generated table #8@1: 71 keys, 17491 bytes
+2021/10/02-13:13:46.201 21f4 Compacted 1@1 + 1@2 files => 17491 bytes
+2021/10/02-13:13:46.241 21f4 compacted to: files[ 0 0 1 0 0 0 0 ]
+2021/10/02-13:13:46.242 21f4 Delete type=2 #7
+2021/10/02-13:13:46.242 21f4 Manual compaction at level-1 from '\x00\x06\x00\x00\xc8\x05\x00p\x00r\x00e\x00f\x00s' @ 642 : 0 .. '\x00\x07\x00\x00\x00' @ 0 : 0; will stop at (end)
+2021/10/02-13:13:46.243 2760 Level-0 table #10: started
+2021/10/02-13:13:46.302 2760 Level-0 table #10: 1032 bytes OK
+2021/10/02-13:13:46.375 2760 Delete type=2 #5
+2021/10/02-13:13:46.375 2760 Delete type=0 #6
+2021/10/02-13:13:46.375 2760 Manual compaction at level-0 from '\x00\x03\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x04\x00\x00\x00' @ 0 : 0; will stop at (end)
+2021/10/02-13:13:46.375 2760 Manual compaction at level-1 from '\x00\x03\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x04\x00\x00\x00' @ 0 : 0; will stop at '\x00\x03\x01 \x03\x00\x00\x00\x00\x00\x00\xf0?\x00\x04\x02\x01\x17\x00s\x00e\x00r\x00v\x00i\x00c\x00e\x00:\x00t\x00o\x00p\x00b\x00a\x00r\x00:\x00f\x00a\x00l\x00l\x00b\x00a\x00c\x00k\x03\x00\x00\x00\x00\x00\x00\xf0?' @ 687 : 0
+2021/10/02-13:13:46.376 2760 Compacting 1@1 + 1@2 files
+2021/10/02-13:13:46.413 2760 Generated table #11@1: 38 keys, 959 bytes
+2021/10/02-13:13:46.413 2760 Compacted 1@1 + 1@2 files => 959 bytes
+2021/10/02-13:13:46.541 2760 compacted to: files[ 0 0 1 0 0 0 0 ]
+2021/10/02-13:13:46.541 2760 Delete type=2 #10
+2021/10/02-13:13:46.542 2760 Manual compaction at level-1 from '\x00\x03\x01 \x03\x00\x00\x00\x00\x00\x00\xf0?\x00\x04\x02\x01\x17\x00s\x00e\x00r\x00v\x00i\x00c\x00e\x00:\x00t\x00o\x00p\x00b\x00a\x00r\x00:\x00f\x00a\x00l\x00l\x00b\x00a\x00c\x00k\x03\x00\x00\x00\x00\x00\x00\xf0?' @ 687 : 0 .. '\x00\x04\x00\x00\x00' @ 0 : 0; will stop at (end)
