@@ -1,3 +1,0 @@
-[3892:7548:0922/205302.454:ERROR:device_event_log_impl.cc(214)] [20:53:02.454] USB: usb_device_handle_win.cc:1048 Failed to read descriptor from node connection: A device attached to the system is not functioning. (0x1F)
-[3892:7548:0922/205302.562:ERROR:device_event_log_impl.cc(214)] [20:53:02.563] Bluetooth: bluetooth_adapter_winrt.cc:1073 Getting Default Adapter failed.
-[3892:7548:0922/205403.519:WARNING:pref_notifier_impl.cc(40)] Pref observer for media_router.cast_allow_all_ips found at shutdown.

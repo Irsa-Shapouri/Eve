@@ -42,6 +42,33 @@
 		"Hope you're fine",
 		"Good to know that you are fine",
 		"I'm glad"
+	],
+
+	"i love you": [
+		"It's hard to understand"
+	],
+
+	"love me": [
+		"Offcourse I love you",
+		"Always",
+		"Yeah I Really love u"
+
+	],
+
+	"are you here": [
+		"Yes",
+		"I am Here",
+		"Yeah I Really love you"
+
+	],
+
+	"you need a break": [
+		"Okay, you Can Call Me Anytime!"
+	],
+
+	"sleep": [
+		"Zzz. Zzz. Zzz."
 	]
+
 
 }
