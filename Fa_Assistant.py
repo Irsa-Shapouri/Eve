@@ -216,13 +216,7 @@ def main(text):
                     next_btn = driver.find_element_by_xpath('//div[@class="playControls__elements"]/button[@class="skipControl sc-ir playControls__control playControls__next skipControl__next"]')
                     next_btn.click()
             
-                elif 'توقف' in soundcloud or 'متوقف' in soundcloud:
-                    play_btn = driver.find_elements_by_xpath('//div[@class="playControls__elements"]/button[@class="playControl sc-ir playControls__control playControls__play"]')
-                    play_btn.click()
 
-                elif 'قبلی' in soundcloud:
-                    previous_btn = driver.find_elements_by_xpath('//div[@class="playControls__elements"]/button[@class="skipControl sc-ir playControls__control playControls__prev skipControl__previous"]')
-                    previous_btn.click()  
 
                 elif 'خارج شو' in soundcloud or 'خروج' in soundcloud:
                     driver.close()
