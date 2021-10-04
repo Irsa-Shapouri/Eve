@@ -13,9 +13,15 @@ For development it's recommended to use [virtualenv](https://virtualenv.pypa.io)
 ```
 python main.py
 ```
+You can see the Commands in index.html or you can say "What can you do"
+
+
+![Screenshot 1](http://i.imgur.com/MztwfXM.png)
 
 
 
+## Authors
 
-
+* [Irsa](https://github.com/irsa03)
+* [Amir Hossein](https://github.com/3amin)
 
