@@ -857,8 +857,52 @@ def main(text):
             speak('Set the alarm for when?')
             alarm_time = record(False)
             attachTOframe(alarm_time)
+               
 
-            if len(alarm_time) == 3:
+            if ":" in alarm_time:
+               
+                if len(alarm_time) == 4:
+                            driver = webdriver.Chrome(executable_path = 'chromedriver.exe')
+                            driver.get('https://kukuklok.com/')
+                            sound = driver.find_element_by_xpath('//div[@class="clock_button"][@id="choose_sound_right"]')
+                            sound.click()
+                            sound.click()     
+                            hour_bt = driver.find_element_by_xpath('//div[@id="button_plus_hour"][@class="clock_button"]')
+                            min_bt = driver.find_element_by_xpath('//div[@id="button_plus_min"][@class="clock_button"]') 
+                            h = alarm_time[0]
+                            m = alarm_time[2:]
+                            for i in range(int(h)):
+                                hour_bt.click()
+                            for i in range(int(m)):
+                                min_bt.click()     
+                            set_Alarm = driver.find_element_by_xpath('//div[@id="set_alarm_button"][@class="button"]')
+                            set_Alarm.click()
+                            driver.minimize_window()
+                            speak('Done')
+
+                elif len(alarm_time) == 5:
+
+                        driver = webdriver.Chrome(executable_path = 'chromedriver.exe')
+                        driver.get('https://kukuklok.com/')
+                        sound = driver.find_element_by_xpath('//div[@class="clock_button"][@id="choose_sound_right"]')
+                        sound.click()
+                        sound.click()     
+                        hour_bt = driver.find_element_by_xpath('//div[@id="button_plus_hour"][@class="clock_button"]')
+                        min_bt = driver.find_element_by_xpath('//div[@id="button_plus_min"][@class="clock_button"]') 
+                        h = alarm_time[:2]
+                        m = alarm_time[3:]
+                        for i in range(int(h)):
+                            hour_bt.click()
+                        for i in range(int(m)):
+                            min_bt.click()     
+                        set_Alarm = driver.find_element_by_xpath('//div[@id="set_alarm_button"][@class="button"]')
+                        set_Alarm.click()
+                        driver.minimize_window()
+                        speak('Done')
+
+            elif ":" not in alarm_time:
+           
+             if len(alarm_time) == 3:
                 driver = webdriver.Chrome(executable_path = 'chromedriver.exe')
                 driver.get('https://kukuklok.com/')
                 sound = driver.find_element_by_xpath('//div[@class="clock_button"][@id="choose_sound_right"]')
@@ -876,8 +920,8 @@ def main(text):
                 set_Alarm.click()
                 driver.minimize_window()
                 speak('Done')
-         
-            elif len(alarm_time) == 4:
+          
+             elif len(alarm_time) == 4:
                 driver = webdriver.Chrome(executable_path = 'chromedriver.exe')
                 driver.get('https://kukuklok.com/')
                 sound = driver.find_element_by_xpath('//div[@class="clock_button"][@id="choose_sound_right"]')
@@ -895,7 +939,7 @@ def main(text):
                 set_Alarm.click()
                 driver.minimize_window()
                 speak('Done')
-      
+            
             else:
                 speak('please just say time')
          except:
@@ -958,7 +1002,7 @@ def main(text):
 
 
 root = Tk()
-root.title('CS50x')
+root.title('Eve')
 
 root.geometry('400x640+1320+200')
 root.resizable(False, False) 
