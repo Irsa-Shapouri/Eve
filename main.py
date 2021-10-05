@@ -10,7 +10,7 @@ def fa():
     os.system('Fa_Assistant.py')
     
 window = Tk()
-window.title('CS50x')
+window.title('Eve')
 
 window.geometry('300x225+1000+300')
 window.resizable(False, False) 
