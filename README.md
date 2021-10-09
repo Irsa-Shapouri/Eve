@@ -2,7 +2,7 @@
 A Personal Assistant for Linux, MacOS and Windows using python
 
 ## Installation
-Python 3.9+ is required to run PyPI Notifier.Install requirements:
+Python 3.9 is required to run PyPI Notifier.Install requirements:
 
     pip install -r requirements.txt
 
