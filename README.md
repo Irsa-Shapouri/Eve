@@ -1,5 +1,8 @@
 # Eve Voise Assistant
-A Personal Assistant for Linux and Windows using python
+EVE is a personal assistant equipped with artificial intelligence. It is actually software that commands speech
+Understands you and does what you are assigned to do. This voice assistant in
+Truth is an example of poor artificial intelligence because it only does what the user wants.
+Eve supports both Persian and English languages.
 
 ## Installation
 Python 3.9 is required to run PyPI Notifier.Install requirements:
